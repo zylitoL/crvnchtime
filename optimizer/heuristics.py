@@ -1,26 +1,22 @@
 # -*- coding: utf-8 -*-
 
 """Contains heuristics to determine volume threshholds of non-speaking volumes.
-
 Heuristics are functions on audio streams that return a volume to which all
 portions of an audio segment that have a larger volume are likely to contain
 speech.
-
 The first argument of all heuristics is an audiostream. This is typically a
 numpy array of volumes, but can be any iterable.
-
 	Typical usage example:
-
 	vol = min_of_max(audiostream)
 """
 
 import random
+import pandas as pd
 import numpy as np
 
 def min_of_max(vols: np.ndarray, obs: int=100, samples: int=1000) -> float:
 	"""
 	Given an audiostream, finds minimum of all sample maximums.
-
 	Parameters
 	----------
 	vols : np.array
@@ -38,16 +34,15 @@ def min_of_max(vols: np.ndarray, obs: int=100, samples: int=1000) -> float:
 
 	## TODO: Rewrite this!
 	return min(
-			[
-					max([vols[random.randrange(len(vols))] for j in range(obs)]) for i in range(samples)
-			]
+		[
+			max([vols[random.randrange(len(vols))] for j in range(obs)]) for i in range(samples)
+		]
 	)
 
 def lower_modes(vols: np.ndarray, modes: int=2, bins: int=100) -> float:
 	"""
 	Given an audiostream, finds the left cutoff of the minimum of the x most
 	frequent modes.
-
 	Parameters
 	----------
 	vols : np.array
@@ -70,4 +65,20 @@ def lower_modes(vols: np.ndarray, modes: int=2, bins: int=100) -> float:
 	## TODO: Find the x most frequent.
 
 	## TODO: Return the left cutoff of the smallest bin
-	pass
+	split_bin = np.arange(0,1, 1 / bins)
+	split_labels = np.arange(0,bins)
+	###bin_indicies = np.digitalize(vols, split_bin)
+
+	myDF = pd.DataFrame({"Volume":vols})
+	myDF["binned"] = pd.cut(x=df["Volume"], bins=split_bin)
+	myDF["bin_level"] = pd.cut(x = df["Volume"],bins = split_bin, labels = split_labels)
+	values = myDF.loc[:,"bin_level"]
+	values = list(dict.fromkeys(values))
+	values.sort()
+	hold = 0
+	for i in range(modes-1):
+		if hold > values[i]:
+			hold = values[i]
+
+	
+	return hold*(1/bins)
