@@ -17,7 +17,7 @@ numpy array of volumes, but can be any iterable.
 import random
 import numpy as np
 
-def min_of_max(vols: np.array[float], obs: int=100, samples: int=1000) -> float:
+def min_of_max(vols: np.ndarray, obs: int=100, samples: int=1000) -> float:
 	"""
 	Given an audiostream, finds minimum of all sample maximums.
 
@@ -43,7 +43,7 @@ def min_of_max(vols: np.array[float], obs: int=100, samples: int=1000) -> float:
 			]
 	)
 
-def lower_modes(vols: np.array[float], modes: int=2, bins: int=100) -> float:
+def lower_modes(vols: np.ndarray, modes: int=2, bins: int=100) -> float:
 	"""
 	Given an audiostream, finds the left cutoff of the minimum of the x most
 	frequent modes.
