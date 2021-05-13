@@ -7,10 +7,10 @@ from typing import Iterable, Tuple
 import heuristics
 import numpy as np
 
-def audiostream(fname: str) -> np.array[float]:
+def audiostream(fname: str) -> np.ndarray:
     pass
 
-def segments(vols: np.array[float]) -> Iterable[Tuple[int, int]]:
+def segments(vols: np.ndarray) -> Iterable[Tuple[int, int]]:
     pass
 
 def optimize(fname: str) -> None:
