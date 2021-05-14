@@ -20,7 +20,7 @@ An automatic procedure to determine and remove potentially unimportant parts sav
 
 crvnchtime makes use of bootstrapping for a volume threshhold, either the quietest speaking volume or the loudest non-speaking noise volume (assumed to be quieter than the speaking volume) using one of multiple heuristics (see heuristics subsection).
 With a video's audiostream using **TODO**, the program then identifies which sections of the video are important/unimportant, and then aggregates these into intervals.
-Through `[ffmpeg]`(https://ffmpeg.org/), the segments are then cropped and stitched into a compressed video file.
+Through [`ffmpeg`](https://ffmpeg.org/), the segments are then cropped and stitched into a compressed video file.
 
 ### Heuristics
 
