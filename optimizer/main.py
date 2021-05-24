@@ -10,6 +10,10 @@ import wave
 import os
 
 
+import matplotlib.pyplot as plt
+from scipy.io import wavfile
+import scipy.io
+
 def audiostream(fname: str) -> np.ndarray:
     abs_file_path = os.path.abspath(fname)
     name = os.path.basename(abs_file_path)
@@ -25,10 +29,15 @@ def audiostream(fname: str) -> np.ndarray:
 	))
 
     filepointer = wave.open("./{fname:}.wav".format(fname=name_without_extension), "rb")
-    filewave = filepointer.readframes(-1)
-    volume = np.frombuffer(filewave, dtype = 'float32')
-
-    return volume
+    #filewave = filepointer.readframes(10)
+    
+    samplerate, data = wavfile.read("./{fname:}.wav".format(fname=name_without_extension))
+    sample = data / 32768.0
+    altered = sample[:,1]
+    complete = np.absolute(altered)
+    plt.plot(complete)
+    plt.show()
+    return complete
 
 
 def segments(vols: np.ndarray) -> Iterable[Tuple[int, int]]:
@@ -41,3 +50,5 @@ def optimize(fname: str) -> None:
 
 def optimize_files(*fnames: str) -> None:
     pass
+
+
