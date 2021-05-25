@@ -90,3 +90,11 @@ def lower_modes(vols: np.ndarray, modes: int=2, bins: int=100) -> float:
 	return hold*(1/bins)
 
     
+def volportion(vols: np.ndarray) -> np.ndarray:
+	lower = lower_modes(vols)
+	myDF = pd.DataFrame({"Volume":vols})
+
+	myDF["add"] = np.where(myDF["Volume"]>lower, True, False)
+	values = myDF.loc[:,"add"]
+	
+	return values
