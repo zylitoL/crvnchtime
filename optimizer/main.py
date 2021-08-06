@@ -7,7 +7,6 @@ from typing import Iterable, Tuple
 
 import numpy as np
 import os
-import pandas as pd
 
 from scipy.io import wavfile
 import heuristics
@@ -31,24 +30,32 @@ def audiostream(fname: str) -> np.ndarray:
 
 	_, data = wavfile.read(
 		"./scratch/{}.wav".format(name))
-	return np.absolute(data)
+	return data
 
 
 def segments(vols: np.ndarray) -> Iterable[Tuple[int, int]]:
-	lower = heuristics.min_of_max(vols)
-	gaps = []
-
-	i = 0
-	while i < len(vols):
-		if vols[i] > lower or i < FPS:
-			j = i + FPS
-			while j < len(vols) and (vols[j] > lower or j <= FPS):
-				j += 1
-			gaps.append((i, j - 1))
-			i = j
-		i += 1
-
-	return gaps, lower
+	limit = heuristics.min_of_max(vols)
+	segs = []
+	
+	start, end = 0, 0
+	itr = enumerate(vols)
+	for i, vol in itr:
+		# iterate to find the beginning of a quiet segment
+		while vol >= limit:
+			i, vol = next(itr, (0, float("-inf")))
+		start = i
+		# keep first second of video
+		if start - end > FPS:
+			segs.append((end, start))
+		# iterate to find the end of the quiet segment
+		while vol < limit:
+			i, vol = next(itr, (0, float("inf")))
+		
+		# sensitivity; only consider the segment if long
+		if i - start >= FPS:
+			end = i
+	
+	return segs
 
 def optimize(fname: str, fout: str="merge") -> None:
 	# file = os.path.basename(fname)
