@@ -29,7 +29,7 @@ def audiostream(fname: str) -> np.ndarray:
 	))
 
 	_, data = wavfile.read(
-		"./scratch/{}.wav".format(name))
+		f"./scratch/{name}.wav")
 	return data
 
 
@@ -44,30 +44,24 @@ def segments(vols: np.ndarray) -> Iterable[Tuple[int, int]]:
 		while vol >= limit:
 			i, vol = next(itr, (0, float("-inf")))
 		start = i
-		# keep first second of video
-		if start - end > FPS:
-			segs.append((end, start))
+			
 		# iterate to find the end of the quiet segment
 		while vol < limit:
 			i, vol = next(itr, (0, float("inf")))
 		
 		# sensitivity; only consider the segment if long
 		if i - start >= FPS:
+			if start - end >= 2 * FPS:
+				segs.append((end, start))
 			end = i
 	
 	return segs
 
-def optimize(fname: str, fout: str="merge") -> None:
-	# file = os.path.basename(fname)
-	# name = os.path.splitext(file)[0]
-	# vols = audiostream(fname)
-	# # abs_file_path = os.path.abspath(fname)
-	# # name = os.path.basename(abs_file_path)
-	# # name_without_extension = name.split(".")[0]
+def optimize(fname: str) -> None:
 	vols = audiostream(fname)
-	seg, _ = segments(vols)
+	seg = segments(vols)
 	bws = [TS.format(start=round(i[0]/FPS, 3), stop=round(i[1]/FPS, 3) + 1) for i in seg]
-	print(CMD.format(bw="+".join(bws), vid=fname), file=open("bruh", "w"))
+	# print(CMD.format(bw="+".join(bws), vid=fname), file=open("bruh", "w"))
 	os.system(CMD.format(bw="+".join(bws), vid=fname))
 
 
