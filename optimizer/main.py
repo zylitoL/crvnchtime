@@ -71,9 +71,6 @@ def optimize(fname: str, foname=None) -> None:
 def optimize_files(*fnames: str) -> None:
 	pass
 
-def optimize_files(*fnames: str) -> None:
-	pass
-
 if __name__ == "__main__":
 	infile = input("Enter a file to compress: ")
 	outfile = input("Enter output filename: ")
