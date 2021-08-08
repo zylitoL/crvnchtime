@@ -57,7 +57,7 @@ def segments(vols: np.ndarray) -> Iterable[Tuple[int, int]]:
 def optimize(infile: str, outfile: str) -> None:
 	vols = audiostream(infile)
 	seg = segments(vols)
-	bws = "+".join([f"between(t, {round(start/FPS, 3)}, {round(end/FPS, 3)}" for start, end in seg])
+	bws = "+".join([f"between(t, {round(start/FPS, 3)}, {round(end/FPS, 3)})" for start, end in seg])
 	os.system(
 		f"""ffmpeg -i {infile} -vf "select='{bws}', setpts=N/FRAME_RATE/TB" -af "aselect='{bws}', asetpts=N/SR/TB" {outfile}""")
 
@@ -87,7 +87,7 @@ def main():
 	if not args.output:
 		args.output = [f"{os.path.splitext(fin)[0]}_cmpd.mp4" for fin in args.input]
 
-	optimize_files(args.input, args.output, args.to)
+	optimize_files(args.input, args.output)
 		
 
 if __name__ == "__main__":
