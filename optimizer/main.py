@@ -11,25 +11,22 @@ import os
 from scipy.io import wavfile
 import heuristics
 
+import argparse
+
+import tkinter as tk
+from tkinter import filedialog as fd
+
 FPS = 44100
-ASTREAM_CMD = """ffmpeg -hide_banner -loglevel warning -i {fpath} -vn -acodec pcm_s16le -ar 44100 -ac 1 ./{out:}.wav"""
-CMD = """ffmpeg -i {vid} -vf "select='{bw}', setpts=N/FRAME_RATE/TB" -af "aselect='{bw}', asetpts=N/SR/TB" {ofile}"""
-TS = "between(t, {start}, {stop})"
 
 def audiostream(fname: str) -> np.ndarray:
-	# implicitly use only the first channel of amplitudes
-	file = os.path.basename(fname)
-	name = os.path.splitext(file)[0]
+	# remove extension
+	name = os.path.splitext(fname)[0]
 
 	print("Obtaining audio stream")
-	
-	os.system(ASTREAM_CMD.format(
-		fpath=fname,
-		out=name
-	))
+	os.system(
+		f"ffmpeg -hide_banner -loglevel warning -i {fname} -vn -acodec pcm_s16le -ar 44100 -ac 1 {name}.wav")
 
-	_, data = wavfile.read(
-		f"./{name}.wav")
+	_, data = wavfile.read(f"{name}.wav")
 	return data
 
 
@@ -57,25 +54,41 @@ def segments(vols: np.ndarray) -> Iterable[Tuple[int, int]]:
 	
 	return segs
 
-def optimize(fname: str, foname=None) -> None:
-	if foname is None:
-		foname = "{}_compressed.mp4".format(fname)
-
-	vols = audiostream(fname)
+def optimize(infile: str, outfile: str) -> None:
+	vols = audiostream(infile)
 	seg = segments(vols)
-	bws = [TS.format(start=round(i[0]/FPS, 3), stop=round(i[1]/FPS, 3) + 1) for i in seg]
-	# print(CMD.format(bw="+".join(bws), vid=fname), file=open("bruh", "w"))
-	os.system(CMD.format(bw="+".join(bws), vid=fname, ofile = foname))
+	bws = "+".join([f"between(t, {round(start/FPS, 3)}, {round(end/FPS, 3)})" for start, end in seg])
+	os.system(
+		f"""ffmpeg -i {infile} -vf "select='{bws}', setpts=N/FRAME_RATE/TB" -af "aselect='{bws}', asetpts=N/SR/TB" {outfile}""")
 
+def optimize_files(ins: Iterable[str], outs: Iterable[str]) -> None:
+	for fin, fout in zip(ins, outs):
+		optimize(fin, fout)
 
-def optimize_files(*fnames: str) -> None:
-	pass
+def main():
+	parser = argparse.ArgumentParser(description="Program to remove quiet portions of videos.")
+	parser.add_argument("--input", "-i", nargs="+", type=str, help="Input videos to compress")
+	parser.add_argument("--output", "-o", nargs="+", type=str, help="Output filenames")
+	args = parser.parse_args()
+
+	# if no input files specified, open up a GUI
+	if not args.input:
+		root = tk.Tk()
+		root.update()
+		args.input = fd.askopenfilenames(title="Select videos to compress")
+		root.update()
+		root.destroy()
+	
+	# if output filenames specified, must be same length as input
+	if args.output and len(args.input) != len(args.output):
+		parser.error("argument --output/-o: must be same length as input or empty")
+	
+	# default output filenames is appending _cmpd
+	if not args.output:
+		args.output = [f"{os.path.splitext(fin)[0]}_cmpd.mp4" for fin in args.input]
+
+	optimize_files(args.input, args.output)
+		
 
 if __name__ == "__main__":
-	infile = input("Enter a file to compress: ")
-	outfile = input("Enter output filename: ")
-
-	if outfile is "":
-		optimize(infile)
-	else:
-		optimize(infile, outfile)
+	main()
