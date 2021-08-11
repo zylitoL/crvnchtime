@@ -3,16 +3,21 @@
 """Helper and driver functions for removing quiet portions of videos.
 """
 
-import argparse
-import os
-import tkinter as tk
-from tkinter import filedialog as fd
 from typing import Iterable, Tuple
 
 import numpy as np
-from scipy.io import wavfile
+import os
 
+from scipy.io import wavfile
 import heuristics
+
+import argparse
+
+import tkinter as tk
+from tkinter import filedialog as fd
+
+import subprocess
+import sys
 
 FPS = 44100
 
@@ -21,9 +26,10 @@ def audiostream(fname: str) -> np.ndarray:
 	name = os.path.splitext(fname)[0]
 
 	print("Obtaining audio stream")
-	os.system(
-		f"ffmpeg -hide_banner -loglevel warning -i {fname} -vn -acodec pcm_s16le -ar 44100 -ac 1 {name}.wav")
-
+	#os.system(
+		#f"ffmpeg -hide_banner -loglevel warning -i {fname} -vn -acodec pcm_s16le -ar 44100 -ac 1 {name}.wav")
+	
+	subprocess.call(['ffmpeg','-hide_banner', '-loglevel', 'warning', '-i', fname, '-vn', '-acodec', 'pcm_s16le', '-ar', '44100', '-ac', '1', f'{name}.wav'])
 	_, data = wavfile.read(f"{name}.wav")
 	return data
 
@@ -56,12 +62,13 @@ def optimize(infile: str, outfile: str) -> None:
 	vols = audiostream(infile)
 	seg = segments(vols)
 	bws = "+".join([f"between(t, {round(start/FPS, 3)}, {round(end/FPS, 3)})" for start, end in seg])
-	os.system(
-		f"""ffmpeg -i {infile} -vf "select='{bws}', setpts=N/FRAME_RATE/TB" -af "aselect='{bws}', asetpts=N/SR/TB" {outfile}""")
-
+	#os.system(f"""ffmpeg -i {infile} -vf "select='{bws}', setpts=N/FRAME_RATE/TB" -af "aselect='{bws}', asetpts=N/SR/TB" {outfile}""")
+	#subprocess.call(f"""ffmpeg -i {infile} -vf "select='{bws}', setpts=N/FRAME_RATE/TB" -af "aselect='{bws}', asetpts=N/SR/TB" {outfile}""", shell = True)
+	
+	subprocess.call(['ffmpeg', '-i', infile, '-vf', 'select =\'' + bws + '\', setpts=\'N/FRAME_RATE/TB\'' ,'-af', 'aselect =\''+ bws +'\', asetpts=\'N/SR/TB\'', outfile])
 def optimize_files(ins: Iterable[str], outs: Iterable[str]) -> None:
 	for fin, fout in zip(ins, outs):
-		optimize(fin, fout)
+		optimize(fin, fout) 
 
 def main():
 	parser = argparse.ArgumentParser(description="Program to remove quiet portions of videos.")
