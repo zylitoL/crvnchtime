@@ -2,22 +2,18 @@
 
 """Helper and driver functions for removing quiet portions of videos.
 """
-
-from typing import Iterable, Tuple
-
-import numpy as np
-import os
-
-from scipy.io import wavfile
-import heuristics
-
 import argparse
-
+import os
 import tkinter as tk
 from tkinter import filedialog as fd
-
+from typing import Iterable, Tuple
 import subprocess
 import sys
+
+import numpy as np
+from scipy.io import wavfile
+
+import heuristics
 
 FPS = 44100
 
