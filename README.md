@@ -2,11 +2,11 @@
 
 A program to identify and remove non-speaking portions of videos.
 
-Comprised of a standalone program (in `\optimizer`) that can apply a number of different heuristics to identify non-speaking volume threshholds, remove non-speaking segments and other functions in the command-line, as well as a web application wrapper at [link].
+Comprised of a standalone program (in `\optimizer`) that can apply a number of different heuristics to identify non-speaking volume threshholds, remove non-speaking segments and other functions in the command-line.
 
 ## Inspiration
 
-A reimagining of [BLecOpS](https://github.com/shi428/blecop) in Python 3, with more volume heuristics, more features, and a live web application.
+A reimagining of [BLecOpS](https://github.com/shi428/blecop) in Python 3, with more volume heuristics and more features.
 
 Lecture recordings contain numerous segments that are not useful to *watch*, such as the lecturer writing, walking, or thinking without any associated vocal commentary.
 One can get around this inefficiency in one of two ways: speeding up the recording, or skipping around.
