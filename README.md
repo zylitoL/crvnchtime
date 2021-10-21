@@ -6,7 +6,7 @@ Comprised of a standalone program (in `\optimizer`) that can apply a number of d
 
 ## Inspiration
 
-A reimagining of [BLecOpS](https://github.com/shi428/blecop) in Python 3, with more volume heuristics and more features.
+A reimagining of [BLecOpS](https://github.com/shi428/blecop) in Python 3, with more planned volume heuristics and more features.
 
 Lecture recordings contain numerous segments that are not useful to *watch*, such as the lecturer writing, walking, or thinking without any associated vocal commentary.
 One can get around this inefficiency in one of two ways: speeding up the recording, or skipping around.
@@ -29,9 +29,25 @@ This takes multiple samples for a maximum volume, and then takes the minimum of 
 By bootstrapping for the maximum, assuming speaking volume is the loudest source of noise in the video, we obtain values centered around the distribution of talking volumes.
 Then to obtain the quitest speaking volume, we take the minimum of the samples.
 
-`lower_modes` takes the histogram of volumes, and assumes of the multiple modes in the distribution, the largest (by volume) mode corresponds to a speaking volume, and hence all other modes correspond to non-speaking volumes such as background noise.
-The threshhold is then the loudest volume from the lowest mode, corresponding to the loudest possible background noise.
+~~`lower_modes` takes the histogram of volumes, and assumes of the multiple modes in the distribution, the largest (by volume) mode corresponds to a speaking volume, and hence all other modes correspond to non-speaking volumes such as background noise.
+The threshhold is then the loudest volume from the lowest mode, corresponding to the loudest possible background noise.~~
 
-## Experimental Data
+## Installation
 
-**TODO**
+At the present, installing the `/optimizer` folder suffices.
+
+## Usage
+
+crvnchtime can be used both from a command line interface:
+```
+python crvnchtime.py -i Uncompressed.mp4
+```
+as a GUI, by running the file without arguments:
+```
+python crvnchtime.py
+```
+and as a module directly:
+```python
+>>> import crvnchtime
+>>> crvnchtime.optimize("Uncompressed.mp4", "compressed.mp4")
+```
