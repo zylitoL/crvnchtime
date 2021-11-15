@@ -11,7 +11,6 @@ numpy array of volumes, but can be any iterable.
 """
 
 import random
-import pandas as pd
 import numpy as np
 
 def min_of_max(vols: np.ndarray, obs: int=100, samples: int=1000) -> float:

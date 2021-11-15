@@ -44,7 +44,7 @@ python crvnchtime.py -i Uncompressed.mp4
 ```
 as a GUI, by running the file without arguments:
 ```
-python crvnchtime.py
+python main.py
 ```
 and as a module directly:
 ```python
