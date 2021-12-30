@@ -40,7 +40,7 @@ At the present, installing the `/optimizer` folder suffices.
 
 crvnchtime can be used both from a command line interface:
 ```
-python crvnchtime.py -i Uncompressed.mp4
+python main.py -i Uncompressed.mp4
 ```
 as a GUI, by running the file without arguments:
 ```
