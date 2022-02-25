@@ -38,62 +38,52 @@ def min_of_max(vols: np.ndarray, obs: int=100, samples: int=1000) -> float:
 		]
 	)
 
-def lower_modes(vols: np.ndarray, modes: int=2, bins: int=100) -> float:
-	"""
-	Given an audiostream, finds the left cutoff of the minimum of the x most
-	frequent modes.
-	Parameters
-	----------
-	vols : np.array
-		An audio stream.
-	modes: int
-		Number of most frequent modes to consider. The default is 2.
-	cuts: int
-		Number of bins. The default is 100.
+# def lower_modes(vols: np.ndarray, modes: int=2, bins: int=100) -> float:
+# 	"""
+# 	Given an audiostream, finds the left cutoff of the minimum of the x most
+# 	frequent modes.
+# 	Parameters
+# 	----------
+# 	vols : np.array
+# 		An audio stream.
+# 	modes: int
+# 		Number of most frequent modes to consider. The default is 2.
+# 	cuts: int
+# 		Number of bins. The default is 100.
 	
-	Returns
-	-------
-	float
-		Volume threshold.
-	"""
-	## TODO: Write this. You may want to consider looking at other libraries
-	## TODO: histogram/binning functions.
+# 	Returns
+# 	-------
+# 	float
+# 		Volume threshold.
+# 	"""
+# 	## TODO: Write this. You may want to consider looking at other libraries
+# 	## TODO: histogram/binning functions.
 
-	## TODO: Create bins/histograms
+# 	## TODO: Create bins/histograms
 
-	## TODO: Find the x most frequent.
+# 	## TODO: Find the x most frequent.
 
-	## TODO: Return the left cutoff of the smallest bin
-	split_bin = np.arange(0,1, 1 / bins)
+# 	## TODO: Return the left cutoff of the smallest bin
+# 	split_bin = np.arange(0,1, 1 / bins)
 	
-	split_labels = np.arange(0,bins-1)
+# 	split_labels = np.arange(0,bins-1)
 	
-	###bin_indicies = np.digitalize(vols, split_bin)
+# 	###bin_indicies = np.digitalize(vols, split_bin)
 
-	myDF = pd.DataFrame({"Volume":vols})
+# 	myDF = pd.DataFrame({"Volume":vols})
 	
-	myDF["binned"] = pd.cut(x=myDF["Volume"], bins=split_bin)
-	myDF["bin_level"] = pd.cut(x = myDF["Volume"],bins = split_bin, labels = split_labels)
-	values = myDF.loc[:,"bin_level"]
-	values = list(dict.fromkeys(values))
-	values.sort()
+# 	myDF["binned"] = pd.cut(x=myDF["Volume"], bins=split_bin)
+# 	myDF["bin_level"] = pd.cut(x = myDF["Volume"],bins = split_bin, labels = split_labels)
+# 	values = myDF.loc[:,"bin_level"]
+# 	values = list(dict.fromkeys(values))
+# 	values.sort()
 	
-	hold = 0
-	for i in range(modes):
+# 	hold = 0
+# 	for i in range(modes):
 		
-		if hold < values[i]:
+# 		if hold < values[i]:
 			
-			hold = values[i]
+# 			hold = values[i]
 
 	
-	return hold*(1/bins)
-
-    
-def volportion(vols: np.ndarray) -> np.ndarray:
-	lower = lower_modes(vols)
-	myDF = pd.DataFrame({"Volume":vols})
-
-	myDF["add"] = np.where(myDF["Volume"]>lower, True, False)
-	values = myDF.loc[:,"add"]
-	
-	return values
+# 	return hold*(1/bins)
