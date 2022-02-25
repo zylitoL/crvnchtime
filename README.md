@@ -48,6 +48,6 @@ python main.py
 ```
 and as a module directly:
 ```python
->>> import crvnchtime
->>> crvnchtime.optimize("Uncompressed.mp4", "compressed.mp4")
+>>> import main
+>>> main.optimize("uncompressed.mp4", "compressed.mp4")
 ```
